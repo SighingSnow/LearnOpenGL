@@ -83,7 +83,7 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader lightingShader("../shader/phonn.vs", "../shader/phonn.fs");
+    Shader lightingShader("../shader/phong.vs", "../shader/phong.fs");
     Shader lampShader("../shader/lamp.vs", "../shader/lamp.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
