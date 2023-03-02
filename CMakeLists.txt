@@ -4,8 +4,8 @@ project(LearnOpenGL)
 set(CMAKE_CXX_STANDARD 11)
 
 option(IMPORT_ASSIMP OFF)
-option(PHONN ON)
-option(BLIN_PHONN OFF)
+option(PHONG ON)
+option(BLIN_PHONG OFF)
 
 #
 option(GLFW_BUILD_DOCS OFF)
@@ -27,12 +27,15 @@ if(IMPORT_ASSIMP)
     add_subdirectory(3rd_party/assimp)
 endif()
 
-if(PHONN) 
-    add_executable(phonn ${CMAKE_CURRENT_SOURCE_DIR}/Light/phonn.cpp ${GLAD_SRC})
+if(PHONG) 
+    add_executable(phonn ${CMAKE_CURRENT_SOURCE_DIR}/light/phong.cpp ${GLAD_SRC})
     target_link_libraries(phonn ${LIBS})
 endif()
 
-if(BLIN_PHONN) 
-    add_executable(blin_phonn ${CMAKE_CURRENT_SOURCE_DIR}/blin_phonn.cpp ${GLAD_SRC})
+if(BLIN_PHONG) 
+    add_executable(blin_phonn ${CMAKE_CURRENT_SOURCE_DIR}/light/blin_phong.cpp ${GLAD_SRC})
     target_link_libraries(blin_phonn ${LIBS})
+endif()
+
+if(GOURAUD) 
 endif()
