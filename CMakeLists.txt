@@ -28,13 +28,13 @@ if(IMPORT_ASSIMP)
 endif()
 
 if(PHONG) 
-    add_executable(phonn ${CMAKE_CURRENT_SOURCE_DIR}/light/phong.cpp ${GLAD_SRC})
-    target_link_libraries(phonn ${LIBS})
+    add_executable(phong ${CMAKE_CURRENT_SOURCE_DIR}/light/phong.cpp ${GLAD_SRC})
+    target_link_libraries(phong ${LIBS})
 endif()
 
 if(BLIN_PHONG) 
-    add_executable(blin_phonn ${CMAKE_CURRENT_SOURCE_DIR}/light/blin_phong.cpp ${GLAD_SRC})
-    target_link_libraries(blin_phonn ${LIBS})
+    add_executable(blin_phong ${CMAKE_CURRENT_SOURCE_DIR}/light/blin_phong.cpp ${GLAD_SRC})
+    target_link_libraries(blin_phong ${LIBS})
 endif()
 
 if(GOURAUD) 
