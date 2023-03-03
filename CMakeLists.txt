@@ -38,4 +38,6 @@ if(BLIN_PHONG)
 endif()
 
 if(GOURAUD) 
+    add_executable(gouraud ${CMAKE_CURRENT_SOURCE_DIR}/light/gouraud.cpp ${GLAD_SRC})
+    target_link_libraries(gouraud ${LIBS})
 endif()
