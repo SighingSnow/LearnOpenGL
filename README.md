@@ -10,9 +10,9 @@ Below are some demos.
 
 Below is Phong and Blinn Phong in the same scene.
 
-<center class="half">
-  <img src="resource/light/blin_phong_floor.png" alt="blin_phong_floor" style="zoom:8%;" height="1150" />
-  <img src="resource/light/phong_floor.png" alt="blin_phong_floor" style="zoom:9%;" />
-</center>
+|         | Lambert | Phong                                 | Blinn Phong                                |
+| ------- | ------- | ------------------------------------- | ------------------------------------------ |
+| Picture |         | ![]("resource/light/phong_floor.png") | ![]("resource/light/blin_phong_floor.png") |
+
 
 The left is Blinn Phong and the the right is Phong.
