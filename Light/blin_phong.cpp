@@ -85,7 +85,8 @@ int main()
     // build and compile our shader zprogram
     // ------------------------------------
     //Shader lightingShader("../shader/phong.vs", "../shader/phong.fs");
-    Shader lightingShader("../shader/blin_phong.vs", "../shader/blin_phong.fs");
+    Shader lightingShader("../shader/lambert.vs", "../shader/lambert.fs");
+    //Shader lightingShader("../shader/blin_phong.vs", "../shader/blin_phong.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
