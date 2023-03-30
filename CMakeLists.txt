@@ -3,8 +3,9 @@ project(LearnOpenGL)
 
 set(CMAKE_CXX_STANDARD 11)
 
+option(BLEND ON)
 option(IMPORT_ASSIMP OFF)
-option(PHONG ON)
+option(PHONG OFF)
 option(BLIN_PHONG OFF)
 
 #
@@ -40,4 +41,9 @@ endif()
 if(GOURAUD) 
     add_executable(gouraud ${CMAKE_CURRENT_SOURCE_DIR}/light/gouraud.cpp ${GLAD_SRC})
     target_link_libraries(gouraud ${LIBS})
+endif()
+
+if(BLEND)
+    add_executable(blend ${CMAKE_CURRENT_SOURCE_DIR}/opengl/blend.cpp ${GLAD_SRC})
+    target_link_libraries(blend ${LIBS})
 endif()
