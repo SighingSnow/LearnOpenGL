@@ -3,11 +3,11 @@ project(LearnOpenGL)
 
 set(CMAKE_CXX_STANDARD 11)
 
-option(BLEND ON)
+option(BLEND OFF)
 option(IMPORT_ASSIMP OFF)
 option(PHONG OFF)
 option(BLIN_PHONG OFF)
-
+option(FRAME_BUFFER OFF)
 #
 option(GLFW_BUILD_DOCS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
@@ -46,4 +46,9 @@ endif()
 if(BLEND)
     add_executable(blend ${CMAKE_CURRENT_SOURCE_DIR}/opengl/blend.cpp ${GLAD_SRC})
     target_link_libraries(blend ${LIBS})
+endif()
+
+if(FRAME_BUFFER)
+    add_executable(frame ${CMAKE_CURRENT_SOURCE_DIR}/opengl/frame.cpp ${GLAD_SRC})
+    target_link_libraries(frame ${LIBS})
 endif()
