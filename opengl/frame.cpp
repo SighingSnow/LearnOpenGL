@@ -120,49 +120,76 @@ int main(void)
         // input
         // -----
         processInput(window);
-        // 
+        
         glBindFramebuffer(GL_FRAMEBUFFER,fbo);
         glEnable(GL_DEPTH_TEST);
+        // 
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glClearColor(0.1f,0.1f,0.1f,1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT  );
-        
         shader.use();
-        glm::mat4 model = glm::mat4(1.0);
+        glm::mat4 model = glm::mat4(1.0f);
+        camera.Yaw   += 180.0f; // rotate the camera's yaw 180 degrees around
+        camera.ProcessMouseMovement(0, 0, false); // call this to make sure it updates its camera vectors, note that we disable pitch constrains for this specific case (otherwise we can't reverse camera's pitch values)
         glm::mat4 view = camera.GetViewMatrix();
-        camera.ProcessMouseMovement(0,0,true);
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),(float)SCR_WIDTH/(float)SCR_HEIGHT,0.1f,100.0f);
-        shader.setMat4("view",view);
-        shader.setMat4("projection",projection);
-        // cube
+        camera.Yaw   -= 180.0f; // reset it back to its original orientation
+        camera.ProcessMouseMovement(0, 0, true); 
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+        // cubes
         glBindVertexArray(cubeVao);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,cubeTexture);
-        model = glm::translate(model,glm::vec3(-1.0f,0.0f,-1.0f));
-        shader.setMat4("model",model);
-        glDrawArrays(GL_TRIANGLES,0,36);
-        model = glm::mat4(1.0);
-        model = glm::translate(model,glm::vec3(2.0f, 0.0f, 0.0f));
-        shader.setMat4("model",model);
-        glDrawArrays(GL_TRIANGLES,0,36);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         // floor
         glBindVertexArray(planeVao);
-        glBindTexture(GL_TEXTURE_2D,floorTexture);
-        shader.setMat4("model",glm::mat4(1.0f));
-        glDrawArrays(GL_TRIANGLES,0,6);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        shader.setMat4("model", glm::mat4(1.0f));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
-        
-        glBindFramebuffer(GL_FRAMEBUFFER,0);
+
+        // second render pass: draw as normal
+        // ----------------------------------
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        model = glm::mat4(1.0f);
+        view = camera.GetViewMatrix();
+        shader.setMat4("view", view);
+
+        // cubes
+        glBindVertexArray(cubeVao);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // floor
+        glBindVertexArray(planeVao);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        shader.setMat4("model", glm::mat4(1.0f));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
         glDisable(GL_DEPTH_TEST);
-        
-        glClearColor(1.0f,1.0f,1.0f,1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
 
         scrShader.use();
         glBindVertexArray(quadVao);
         glBindTexture(GL_TEXTURE_2D, texture);
         glDrawArrays(GL_TRIANGLES,0,6);
-
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
