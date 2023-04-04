@@ -67,27 +67,28 @@ int main(void)
     glEnable(GL_DEPTH_TEST);
     
     Shader shader("../shader/frame.vs","../shader/frame.fs");
-    Shader scrShader("../shader/scr_frame.vs","../shader/scr_frame.fs");
+    Shader screenShader("../shader/scr_frame.vs","../shader/scr_frame.fs");
 
     // scene
-    unsigned int cubeVao,cubeVbo;
-    unsigned int planeVao,planeVbo;
-    unsigned int quadVao,quadVbo;
-    initTexBox(cubeVao,cubeVbo); 
-    initPlane(planeVao,planeVbo);
-    initQuad(quadVao,quadVbo);
+    unsigned int cubeVAO,cubeVBO;
+    unsigned int planeVAO,planeVBO;
+    unsigned int quadVAO,quadVBO;
+    initTexBox(cubeVAO,cubeVBO); 
+    initPlane(planeVAO,planeVBO);
+    initQuad(quadVAO,quadVBO);
+    
 
     // texture
     unsigned int cubeTexture = loadTexture("../resource/textures/rubic.png");
     unsigned int floorTexture = loadTexture("../resource/textures/wood.png");
 
     shader.use(); shader.setInt("texture1",0);
-    scrShader.use(); scrShader.setInt("screenTexture",0);
+    screenShader.use(); screenShader.setInt("screenTexture",0);
 
     // FrameBuffer
-    unsigned int fbo;
-    glGenFramebuffers(1,&fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER,fbo);
+    unsigned int framebuffer;
+    glGenFramebuffers(1,&framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
     // 纹理附件
     unsigned int texture;
     glGenTextures(1,&texture);
@@ -120,10 +121,17 @@ int main(void)
         // input
         // -----
         processInput(window);
-        
-        glBindFramebuffer(GL_FRAMEBUFFER,fbo);
-        glEnable(GL_DEPTH_TEST);
-        // 
+
+
+        // first render pass: mirror texture.
+        // bind to framebuffer and draw to color texture as we normally 
+        // would, but with the view camera reversed.
+        // bind to framebuffer and draw scene as we normally would to color texture 
+        // ------------------------------------------------------------------------
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
+
+        // make sure we clear the framebuffer's content
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -138,7 +146,7 @@ int main(void)
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
         // cubes
-        glBindVertexArray(cubeVao);
+        glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
@@ -149,7 +157,7 @@ int main(void)
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         // floor
-        glBindVertexArray(planeVao);
+        glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         shader.setMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -167,7 +175,7 @@ int main(void)
         shader.setMat4("view", view);
 
         // cubes
-        glBindVertexArray(cubeVao);
+        glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
@@ -178,34 +186,37 @@ int main(void)
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         // floor
-        glBindVertexArray(planeVao);
+        glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         shader.setMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
 
-        glDisable(GL_DEPTH_TEST);
+        // now draw the mirror quad with screen texture
+        // --------------------------------------------
+        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 
-        scrShader.use();
-        glBindVertexArray(quadVao);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glDrawArrays(GL_TRIANGLES,0,6);
+        screenShader.use();
+        glBindVertexArray(quadVAO);
+        glBindTexture(GL_TEXTURE_2D, texture);	// use the color attachment texture as the texture of the quad plane
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &cubeVao);
-    glDeleteVertexArrays(1, &planeVao);
-    glDeleteVertexArrays(1, &quadVao);
-    glDeleteBuffers(1, &cubeVbo);
-    glDeleteBuffers(1, &planeVbo);
-    glDeleteBuffers(1, &quadVbo);
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteVertexArrays(1, &planeVAO);
+    glDeleteVertexArrays(1, &quadVAO);
+    glDeleteBuffers(1, &cubeVBO);
+    glDeleteBuffers(1, &planeVBO);
+    glDeleteBuffers(1, &quadVBO);
     glDeleteRenderbuffers(1, &rbo);
-    glDeleteFramebuffers(1,&fbo);
+    glDeleteFramebuffers(1,&framebuffer);
 
     glfwTerminate();
 

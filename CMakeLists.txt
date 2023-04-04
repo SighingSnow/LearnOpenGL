@@ -49,6 +49,6 @@ if(BLEND)
 endif()
 
 if(FRAME_BUFFER)
-    add_executable(frame ${CMAKE_CURRENT_SOURCE_DIR}/opengl/frame_test.cpp ${GLAD_SRC})
+    add_executable(frame ${CMAKE_CURRENT_SOURCE_DIR}/opengl/frame.cpp ${GLAD_SRC})
     target_link_libraries(frame ${LIBS})
 endif()
