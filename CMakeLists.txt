@@ -52,3 +52,12 @@ if(FRAME_BUFFER)
     add_executable(frame ${CMAKE_CURRENT_SOURCE_DIR}/opengl/frame.cpp ${GLAD_SRC})
     target_link_libraries(frame ${LIBS})
 endif()
+
+if(LOAD_MESH)
+    add_executable(msh 
+        ${CMAKE_CURRENT_SOURCE_DIR}/mesh/load_mesh.cc 
+        ${CMAKE_CURRENT_SOURCE_DIR}/mesh/model.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/mesh/mesh.cc
+        ${GLAD_SRC})
+    target_link_libraries(msh ${LIBS})
+endif()
